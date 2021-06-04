@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "951815017189",
+    "project_id": "geofence-remider",
+    "storage_bucket": "geofence-remider.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951815017189:android:756f45a410e4e9fc5a3a0c",
+        "android_client_info": {
+          "package_name": "com.udacity.project4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951815017189-7la8cam71clhq0qqa5o2m03na6uqmoe1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFhG8vzI8UFrANOqwYQuWRukSfJKNaw6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951815017189-7la8cam71clhq0qqa5o2m03na6uqmoe1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

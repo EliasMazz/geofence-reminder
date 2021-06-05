@@ -30,11 +30,13 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     /**
      * Validate the entered data then saves the reminder data to the DataSource
      */
-    fun validateAndSaveReminder(reminderData: ReminderDataItem) {
+    fun validateAndSaveReminder(reminderData: ReminderDataItem) =
         if (validateEnteredData(reminderData)) {
             saveReminder(reminderData)
+            true
+        } else {
+            false
         }
-    }
 
     /**
      * Save the reminder to the data source
@@ -62,7 +64,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         showSnackBarInt.value = R.string.permission_denied_explanation
     }
 
-    fun showToastGeoFenceNotAdded(){
+    fun showToastGeoFenceNotAdded() {
         showToast.value = app.getString(R.string.geofences_not_added)
     }
 

@@ -16,10 +16,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     BaseViewModel(app) {
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
-    val reminderSelectedLocationStr = MutableLiveData<String>()
     val selectedPOI = MutableLiveData<PointOfInterest>()
-    val latitude = MutableLiveData<Double>()
-    val longitude = MutableLiveData<Double>()
 
     /**
      * Clear the live data objects to start fresh next time the view model gets called
@@ -27,10 +24,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     fun onClear() {
         reminderTitle.value = null
         reminderDescription.value = null
-        reminderSelectedLocationStr.value = null
         selectedPOI.value = null
-        latitude.value = null
-        longitude.value = null
     }
 
     /**
@@ -45,7 +39,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     /**
      * Save the reminder to the data source
      */
-    fun saveReminder(reminderData: ReminderDataItem) {
+    private fun saveReminder(reminderData: ReminderDataItem) {
         showLoading.value = true
         viewModelScope.launch {
             dataSource.saveReminder(
@@ -64,6 +58,14 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
     }
 
+    fun showSnackBarpermissionDenied() {
+        showSnackBarInt.value = R.string.permission_denied_explanation
+    }
+
+    fun showToastGeoFenceNotAdded(){
+        showToast.value = app.getString(R.string.geofences_not_added)
+    }
+
     /**
      * Validate the entered data and show error to the user if there's any invalid data
      */
@@ -73,7 +75,10 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
             return false
         }
 
-        if (reminderData.location.isNullOrEmpty()) {
+        if (reminderData.location.isNullOrEmpty() &&
+            reminderData.latitude != null &&
+            reminderData.longitude != null
+        ) {
             showSnackBarInt.value = R.string.err_select_location
             return false
         }

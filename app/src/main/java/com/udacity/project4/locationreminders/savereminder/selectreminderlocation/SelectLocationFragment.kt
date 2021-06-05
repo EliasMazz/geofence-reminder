@@ -31,9 +31,7 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
-import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.utils.SingleLiveEvent
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 
@@ -45,7 +43,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentSelectLocationBinding
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var lastKnownLocation: LatLng
     private var poiSelected: Marker? = null
     private val logTag = SelectLocationFragment::class.java.simpleName
 
@@ -58,15 +55,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
-
         binding.viewModel = _viewModel
         binding.lifecycleOwner = this
 
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
 
+        syncMap()
         setupSaveButton()
-        fetchLocation()
         return binding.root
     }
 
@@ -95,17 +91,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         setMapStyle(map)
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 16f))
         enableMyLocation()
         setPoiClick(map)
     }
-
-    @SuppressLint("MissingPermission")
-    private fun fetchLocation() =
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            lastKnownLocation = LatLng(location.latitude, location.longitude)
-            syncMap()
-        }
 
     private fun syncMap() {
         val mapFragment = childFragmentManager
@@ -133,9 +121,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
             map.setMyLocationEnabled(true)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                val lastKnownLocation = LatLng(location.latitude, location.longitude)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 16f))
+            }
         } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
+            requestPermissions(
                 arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_LOCATION_PERMISSION
             )
@@ -151,6 +142,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 enableMyLocation()
             }
+        } else {
+            _viewModel.showSnackBarpermissionDenied()
         }
     }
 

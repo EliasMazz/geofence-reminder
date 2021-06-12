@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.authentication.AuthenticationActivity
+import com.udacity.project4.authentication.FirebaseAuthWrapper
 
 
 /**
@@ -58,12 +59,12 @@ abstract class BaseFragment : Fragment() {
     }
 
     private fun observeAuthenticationState() {
-        _viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
+        _viewModel.isAuthenticated.observe(viewLifecycleOwner, Observer { authenticationState ->
             when (authenticationState) {
-                BaseViewModel.AuthenticationState.AUTHENTICATED -> {
+                FirebaseAuthWrapper.AuthenticationState.AUTHENTICATED -> {
                     //no op
                 }
-                BaseViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                FirebaseAuthWrapper.AuthenticationState.UNAUTHENTICATED -> {
                     val intent = Intent(requireContext(), AuthenticationActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)

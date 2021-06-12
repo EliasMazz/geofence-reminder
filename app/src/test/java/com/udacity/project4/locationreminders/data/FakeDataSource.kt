@@ -2,27 +2,38 @@ package com.udacity.project4.locationreminders.data
 
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import kotlinx.coroutines.runBlocking
 
-//Use FakeDataSource that acts as a test double to the LocalDataSource
-class FakeDataSource : ReminderDataSource {
+const val REMINDERS_NOT_FOUND_ERROR = "reminders not found"
+const val REMINDER_NOT_FOUND_ERROR = "reminder not found"
 
-//    TODO: Create a fake data source to act as a double to the real data source
+class FakeDataSource(
+    var reminders: MutableList<ReminderDTO>? = mutableListOf()
+) : ReminderDataSource {
 
-    override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        TODO("Return the reminders")
-    }
+    override suspend fun getReminders(): Result<List<ReminderDTO>> =
+        runBlocking {
+            reminders?.let {
+                return@runBlocking Result.Success(ArrayList(it))
+            } ?: Result.Error(REMINDERS_NOT_FOUND_ERROR)
+        }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
-        TODO("save the reminder")
+        runBlocking { reminders?.add(reminder) }
     }
 
-    override suspend fun getReminder(id: String): Result<ReminderDTO> {
-        TODO("return the reminder with the id")
-    }
+    override suspend fun getReminder(id: String): Result<ReminderDTO> =
+        runBlocking {
+            reminders?.firstOrNull { it.id == id }.let {
+                return@runBlocking if (it != null) {
+                    Result.Success(it)
+                } else {
+                    Result.Error("reminder not found")
+                }
+            }
+        }
 
     override suspend fun deleteAllReminders() {
-        TODO("delete all the reminders")
+        runBlocking { reminders?.clear() }
     }
-
-
 }

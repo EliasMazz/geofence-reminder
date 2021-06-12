@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
+import com.udacity.project4.authentication.IFirebaseAuth
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
@@ -12,8 +14,9 @@ import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
     private val app: Application,
-    private val dataSource: ReminderDataSource
-) : BaseViewModel(app) {
+    private val dataSource: ReminderDataSource,
+    private val firebaseAuth: IFirebaseAuth
+) : BaseViewModel(app, firebaseAuth) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
 
@@ -52,8 +55,8 @@ class RemindersListViewModel(
         }
     }
 
-    fun logoutUser(){
-        AuthUI.getInstance().signOut(app.applicationContext)
+    fun logoutUser() {
+        firebaseAuth.logoutUser()
     }
 
     /**

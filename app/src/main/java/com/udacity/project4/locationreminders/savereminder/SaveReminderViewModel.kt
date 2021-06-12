@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
+import com.udacity.project4.authentication.IFirebaseAuth
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.data.ReminderDataSource
@@ -12,8 +13,11 @@ import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.launch
 
-class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) :
-    BaseViewModel(app) {
+class SaveReminderViewModel(
+    private val app: Application,
+    private val dataSource: ReminderDataSource,
+    firebaseAuth: IFirebaseAuth
+) : BaseViewModel(app, firebaseAuth) {
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
     val selectedPOI = MutableLiveData<PointOfInterest>()
@@ -61,7 +65,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     }
 
     fun showSnackBarpermissionDenied() {
-        showSnackBarInt.value = R.string.permission_denied_explanation
+        showSnackBar.value = app.getString(R.string.permission_denied_explanation)
     }
 
     fun showToastGeoFenceNotAdded() {
@@ -73,15 +77,15 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
      */
     private fun validateEnteredData(reminderData: ReminderDataItem): Boolean {
         if (reminderData.title.isNullOrEmpty()) {
-            showSnackBarInt.value = R.string.err_enter_title
+            showSnackBar.value = app.getString(R.string.err_enter_title)
             return false
         }
 
-        if (reminderData.location.isNullOrEmpty() &&
-            reminderData.latitude != null &&
-            reminderData.longitude != null
+        if (reminderData.location.isNullOrEmpty() ||
+            reminderData.latitude == null ||
+            reminderData.longitude == null
         ) {
-            showSnackBarInt.value = R.string.err_select_location
+            showSnackBar.value = app.getString(R.string.err_select_location)
             return false
         }
         return true

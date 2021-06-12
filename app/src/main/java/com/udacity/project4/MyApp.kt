@@ -1,7 +1,9 @@
 package com.udacity.project4
 
-import android.app.Application
 import androidx.multidex.MultiDexApplication
+import com.google.firebase.auth.FirebaseAuth
+import com.udacity.project4.authentication.FirebaseAuthWrapper
+import com.udacity.project4.authentication.IFirebaseAuth
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
@@ -25,7 +27,8 @@ class MyApp : MultiDexApplication() {
             viewModel {
                 RemindersListViewModel(
                     get(),
-                    get() as ReminderDataSource
+                    get() as ReminderDataSource,
+                    get() as IFirebaseAuth
                 )
             }
 
@@ -34,11 +37,18 @@ class MyApp : MultiDexApplication() {
                 //This view model is declared singleton to be used across multiple fragments
                 SaveReminderViewModel(
                     get(),
-                    get() as ReminderDataSource
+                    get() as ReminderDataSource,
+                    get() as IFirebaseAuth
                 )
             }
             single { RemindersLocalRepository(get()) as ReminderDataSource }
             single { LocalDB.createRemindersDao(this@MyApp) }
+            single {
+                FirebaseAuthWrapper(
+                    get(),
+                    FirebaseAuth.getInstance()
+                ) as IFirebaseAuth
+            }
         }
 
         startKoin {

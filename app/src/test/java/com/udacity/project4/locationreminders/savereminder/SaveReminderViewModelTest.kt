@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
+import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.authentication.FakeAuthentication
 import com.udacity.project4.locationreminders.data.FakeDataSource
@@ -109,13 +110,14 @@ class SaveReminderViewModelTest {
 
 
     @Test
-    fun `when validate and save reminder is called correct toast message is set`() =
+    fun `when validate and save reminder is called correct toast message and navigation command are set`() =
         with(saveReminderViewModel) {
             val isValidated = validateAndSaveReminder(reminderDataItem)
 
             val expected = applicationContext.getString(R.string.reminder_saved)
 
             assertEquals(showToast.getOrAwaitValue(), expected)
+            assertEquals(navigationCommand.getOrAwaitValue(), NavigationCommand.Back)
             assertEquals(isValidated, true)
         }
 

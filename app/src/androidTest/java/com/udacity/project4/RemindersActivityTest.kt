@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.google.firebase.auth.FirebaseAuth
+import com.udacity.project4.authentication.FirebaseAuthWrapper
+import com.udacity.project4.authentication.IFirebaseAuth
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
@@ -40,17 +43,25 @@ class RemindersActivityTest :
             viewModel {
                 RemindersListViewModel(
                     appContext,
-                    get() as ReminderDataSource
+                    get() as ReminderDataSource,
+                    get() as IFirebaseAuth
                 )
             }
             single {
                 SaveReminderViewModel(
                     appContext,
-                    get() as ReminderDataSource
+                    get() as ReminderDataSource,
+                    get() as IFirebaseAuth
                 )
             }
             single { RemindersLocalRepository(get()) as ReminderDataSource }
             single { LocalDB.createRemindersDao(appContext) }
+            single {
+                FirebaseAuthWrapper(
+                    get(),
+                    FirebaseAuth.getInstance()
+                ) as IFirebaseAuth
+            }
         }
         //declare a new koin module
         startKoin {

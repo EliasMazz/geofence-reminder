@@ -13,6 +13,7 @@ class FirebaseAuthWrapper(
 ) : LiveData<FirebaseUser?>(), IFirebaseAuth {
     enum class AuthenticationState { AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION }
 
+
     override val isAuthenticated: LiveData<AuthenticationState>
         get() = this.map { user ->
             if (user != null) {

@@ -51,7 +51,7 @@ class RemindersDaoTest {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             RemindersDatabase::class.java
-        ).build()
+        ).allowMainThreadQueries().build()
     }
 
     @After

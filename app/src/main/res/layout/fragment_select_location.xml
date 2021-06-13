@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel" />
@@ -26,7 +27,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/save_button"
+            android:id="@+id/saveSelectPoiButton"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/colorAccent"
@@ -35,7 +36,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:saveButtonVisibility="@{viewModel.selectedPOI}">
 
             <TextView
                 android:layout_width="wrap_content"

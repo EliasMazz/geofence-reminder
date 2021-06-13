@@ -13,7 +13,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -63,13 +62,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         syncMap()
         setupSaveButton()
+
         return binding.root
     }
 
-    private fun setupSaveButton() =
-        binding.saveButton.setOnClickListener {
+    private fun setupSaveButton() {
+        binding.saveSelectPoiButton.setOnClickListener {
             onLocationSelected()
         }
+    }
 
     private fun setMapStyle(map: GoogleMap) {
         try {
@@ -107,7 +108,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             poiSelected = map.addMarker(MarkerOptions().position(poi.latLng).title(poi.name))
             _viewModel.selectedPOI.value = PointOfInterest(poi.latLng, poi.placeId, poi.name)
             poiSelected?.showInfoWindow()
-            binding.saveButton.visibility = View.VISIBLE
         }
 
     private fun isPermissionGranted() =

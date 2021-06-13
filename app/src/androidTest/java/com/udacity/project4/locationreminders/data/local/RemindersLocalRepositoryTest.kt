@@ -113,7 +113,4 @@ class RemindersLocalRepositoryTest {
         val reminders = result as Result.Success
         assertEquals(reminders.data, emptyList<ReminderDTO>())
     }
-
-
-
 }

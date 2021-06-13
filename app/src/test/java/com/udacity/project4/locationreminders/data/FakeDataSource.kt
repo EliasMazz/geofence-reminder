@@ -28,7 +28,7 @@ class FakeDataSource(
                 return@runBlocking if (it != null) {
                     Result.Success(it)
                 } else {
-                    Result.Error("reminder not found")
+                    Result.Error(REMINDER_NOT_FOUND_ERROR)
                 }
             }
         }

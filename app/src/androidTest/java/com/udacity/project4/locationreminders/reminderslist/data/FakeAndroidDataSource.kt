@@ -3,11 +3,10 @@ package com.udacity.project4.locationreminders.reminderslist.data
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.locationreminders.data.local.REMINDER_NOT_FOUND_ERROR
 import kotlinx.coroutines.runBlocking
 
 const val REMINDERS_NOT_FOUND_ERROR = "reminders not found"
-const val REMINDER_NOT_FOUND_ERROR = "reminder not found"
-
 class FakeAndroidDataSource(
     var reminders: MutableList<ReminderDTO>? = mutableListOf()
 ) : ReminderDataSource {
@@ -29,7 +28,7 @@ class FakeAndroidDataSource(
                 return@runBlocking if (it != null) {
                     Result.Success(it)
                 } else {
-                    Result.Error("reminder not found")
+                    Result.Error(REMINDER_NOT_FOUND_ERROR)
                 }
             }
         }

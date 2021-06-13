@@ -14,6 +14,9 @@ import kotlinx.coroutines.*
  * @param remindersDao the dao that does the Room db operations
  * @param ioDispatcher a coroutine dispatcher to offload the blocking IO tasks
  */
+
+const val REMINDER_NOT_FOUND_ERROR = "Reminder not found!"
+
 class RemindersLocalRepository(
     private val remindersDao: RemindersDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -58,7 +61,7 @@ class RemindersLocalRepository(
                     if (reminder != null) {
                         return@withContext Result.Success(reminder)
                     } else {
-                        return@withContext Result.Error("Reminder not found!")
+                        return@withContext Result.Error(REMINDER_NOT_FOUND_ERROR)
                     }
                 } catch (e: Exception) {
                     return@withContext Result.Error(e.localizedMessage)

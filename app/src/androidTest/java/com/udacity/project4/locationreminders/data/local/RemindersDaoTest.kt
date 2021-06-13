@@ -11,6 +11,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,18 +59,24 @@ class RemindersDaoTest {
 
     @Test
     fun saveReminderAndGetById() = runBlockingTest {
-        with(listOfReminders.first()) {
-            database.reminderDao().saveReminder(this)
+        database.reminderDao().saveReminder(remidender1)
 
-            val result = database.reminderDao().getReminderById(remidender1.id)
+        val result = database.reminderDao().getReminderById(remidender1.id)
 
-            assertNotNull(result)
-            assertEquals(result?.id, this.id)
-            assertEquals(result?.description, this.description)
-            assertEquals(result?.location, this.location)
-            assertEquals(result?.latitude, this.latitude)
-            assertEquals(result?.longitude, this.longitude)
-        }
+        assertNotNull(result)
+        assertEquals(result?.id, remidender1.id)
+        assertEquals(result?.description, remidender1.description)
+        assertEquals(result?.location, remidender1.location)
+        assertEquals(result?.latitude, remidender1.latitude)
+    }
+
+    @Test
+    fun saveReminderAndGetByIdError() = runBlockingTest {
+        database.reminderDao().saveReminder(remidender1)
+
+        val result = database.reminderDao().getReminderById(remidender2.id)
+
+        assertNull(result)
     }
 
     @Test

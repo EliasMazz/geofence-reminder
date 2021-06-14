@@ -102,13 +102,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun setPoiClick(map: GoogleMap) =
+    private fun setPoiClick(map: GoogleMap) {
         map.setOnPoiClickListener { poi ->
             poiSelected?.remove()
             poiSelected = map.addMarker(MarkerOptions().position(poi.latLng).title(poi.name))
             _viewModel.selectedPOI.value = PointOfInterest(poi.latLng, poi.placeId, poi.name)
             poiSelected?.showInfoWindow()
         }
+
+        map.setOnMapClickListener {
+            poiSelected?.remove()
+            poiSelected = map.addMarker(MarkerOptions().position(it).title("$it"))
+            _viewModel.selectedPOI.value = PointOfInterest(it, "$it", "$it")
+            poiSelected?.showInfoWindow()
+        }
+    }
+
 
     private fun isPermissionGranted() =
         ContextCompat.checkSelfPermission(

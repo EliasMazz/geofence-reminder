@@ -8,11 +8,13 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.rule.ActivityTestRule
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.firebase.auth.FirebaseAuth
@@ -30,8 +32,11 @@ import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -42,6 +47,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 import org.koin.test.inject
 
+
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 //END TO END test to black box test the app
@@ -50,6 +56,9 @@ class RemindersActivityTest : AutoCloseKoinTest() {
     private lateinit var repository: ReminderDataSource
     private lateinit var firebaseAuthInstance: FirebaseAuth
     private lateinit var appContext: Application
+
+    @get:Rule
+    var activityRule: ActivityTestRule<RemindersActivity> = ActivityTestRule(RemindersActivity::class.java)
 
     /**
      * As we use Koin as a Service Locator Library to develop our code, we'll also use Koin to test our code.
@@ -150,6 +159,15 @@ class RemindersActivityTest : AutoCloseKoinTest() {
         onView(withText(title)).check(matches(isDisplayed()))
         onView(withText(description)).check(matches(isDisplayed()))
 
+        onView(withId(R.id.saveReminder)).perform(click())
+
+        onView(withText(
+            R.string.reminder_saved
+        )).inRoot(withDecorView(not(`is`(activityRule.activity.getWindow().getDecorView())))).check(matches(isDisplayed()))
+
+        onView(withText(title)).check(matches(isDisplayed()))
+        onView(withText(description)).check(matches(isDisplayed()))
+
         activityScenario.close()
     }
 
@@ -216,4 +234,6 @@ class RemindersActivityTest : AutoCloseKoinTest() {
         onView(withId(R.id.login)).check(matches(isDisplayed()))
         activityScenario.close()
     }
+
+
 }

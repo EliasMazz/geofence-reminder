@@ -6,13 +6,24 @@ import kotlinx.coroutines.runBlocking
 
 const val REMINDERS_NOT_FOUND_ERROR = "reminders not found"
 const val REMINDER_NOT_FOUND_ERROR = "reminder not found"
+const val REMINDER_TEST_EXCEPTION_ERROR = "Test exception"
 
 class FakeDataSource(
     var reminders: MutableList<ReminderDTO>? = mutableListOf()
 ) : ReminderDataSource {
 
+    private var shouldReturnError = false
+
+    fun setReturnError(value: Boolean) {
+        shouldReturnError = true
+    }
+
     override suspend fun getReminders(): Result<List<ReminderDTO>> =
         runBlocking {
+            if (shouldReturnError) {
+                val exception = Exception(REMINDER_TEST_EXCEPTION_ERROR)
+                return@runBlocking Result.Error(exception.localizedMessage)
+            }
             reminders?.let {
                 return@runBlocking Result.Success(ArrayList(it))
             } ?: Result.Error(REMINDERS_NOT_FOUND_ERROR)

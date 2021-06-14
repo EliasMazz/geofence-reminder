@@ -8,7 +8,7 @@ import com.udacity.project4.authentication.FirebaseAuthWrapper.AuthenticationSta
 import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.authentication.FakeAuthentication
 import com.udacity.project4.locationreminders.data.FakeDataSource
-import com.udacity.project4.locationreminders.data.REMINDERS_NOT_FOUND_ERROR
+import com.udacity.project4.locationreminders.data.REMINDER_TEST_EXCEPTION_ERROR
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -112,11 +112,11 @@ class RemindersListViewModelTest {
     fun `when loadReminders fails set correct snackbar message`() =
         with(reminderListViewModel)
         {
-            fakeDataSource.reminders = null
+            fakeDataSource.setReturnError(true)
 
             loadReminders()
 
-            assertEquals(showSnackBar.getOrAwaitValue(), REMINDERS_NOT_FOUND_ERROR)
+            assertEquals(showSnackBar.getOrAwaitValue(), REMINDER_TEST_EXCEPTION_ERROR)
         }
 
     @Test

@@ -13,6 +13,7 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -85,13 +86,27 @@ class SaveReminderFragment : BaseFragment() {
         )
 
         if (_viewModel.validateAndSaveReminder(remiderDataItem)) {
-            addGeoFenceForReminder(
-                remiderDataItem.id,
-                remiderDataItem.latitude!!,
-                remiderDataItem.longitude!!
-            )
+            listenLocationSettings(remiderDataItem)
         }
     }
+
+    private fun listenLocationSettings(remiderDataItem: ReminderDataItem) =
+        locationSettingsResponseTask?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                addGeoFenceForReminder(
+                    remiderDataItem.id,
+                    remiderDataItem.latitude!!,
+                    remiderDataItem.longitude!!
+                )
+            } else {
+                Snackbar.make(
+                    this.view!!,
+                    R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
+                ).setAction(android.R.string.ok) {
+                    checkDeviceLocationSettings()
+                }.show()
+            }
+        }
 
     @SuppressLint("MissingPermission")
     private fun addGeoFenceForReminder(

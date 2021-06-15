@@ -28,8 +28,6 @@ import kotlinx.android.synthetic.main.activity_reminders.nav_host_fragment
  * The RemindersActivity that holds the reminders fragments
  */
 class RemindersActivity : AppCompatActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reminders)
@@ -55,5 +53,9 @@ class RemindersActivity : AppCompatActivity() {
                 fragment.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

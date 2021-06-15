@@ -107,27 +107,24 @@ class SaveReminderFragment : BaseFragment() {
             longitude = longitude
         )
 
-        if (_viewModel.validateAndSaveReminder(remiderDataItem)) {
-            checkPermissionsAndDeviceLocation()
+        if (foregroundAndBackgroundLocationPermissionApproved()) {
+            checkDeviceLocationSettings()
             listenLocationSettings(remiderDataItem)
+        } else {
+            requestForegroundAndBackgroundLocationPermissions()
         }
     }
 
     private fun listenLocationSettings(remiderDataItem: ReminderDataItem) =
         locationSettingsResponseTask?.addOnCompleteListener {
             if (it.isSuccessful) {
-                addGeoFenceForReminder(
-                    remiderDataItem.id,
-                    remiderDataItem.latitude!!,
-                    remiderDataItem.longitude!!
-                )
-            } else {
-                Snackbar.make(
-                    this.view!!,
-                    R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
-                ).setAction(android.R.string.ok) {
-                    checkDeviceLocationSettings()
-                }.show()
+                if (_viewModel.validateAndSaveReminder(remiderDataItem)) {
+                    addGeoFenceForReminder(
+                        remiderDataItem.id,
+                        remiderDataItem.latitude!!,
+                        remiderDataItem.longitude!!
+                    )
+                }
             }
         }
 
@@ -197,13 +194,6 @@ class SaveReminderFragment : BaseFragment() {
 
     }
 
-    private fun checkPermissionsAndDeviceLocation() {
-        if (foregroundAndBackgroundLocationPermissionApproved()) {
-            checkDeviceLocationSettings()
-        } else {
-            requestForegroundAndBackgroundLocationPermissions()
-        }
-    }
 
     @TargetApi(29)
     private fun requestForegroundAndBackgroundLocationPermissions() {
@@ -271,7 +261,7 @@ class SaveReminderFragment : BaseFragment() {
                     this.view!!,
                     R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
                 ).setAction(android.R.string.ok) {
-                    checkDeviceLocationSettings()
+                        checkDeviceLocationSettings()
                 }.show()
             }
         }

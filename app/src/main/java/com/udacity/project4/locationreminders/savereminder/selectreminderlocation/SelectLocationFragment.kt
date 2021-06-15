@@ -80,15 +80,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onStart() {
         super.onStart()
         checkPermissionsAndDeviceLocation()
     }
-
 
     private fun checkPermissionsAndDeviceLocation() {
         if (foregroundLocationPermissionApproved()) {
@@ -159,6 +154,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -183,6 +179,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     })
                 }.show()
         } else {
+            map.setMyLocationEnabled(true)
             checkPermissionsAndDeviceLocation()
         }
     }

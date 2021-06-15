@@ -35,6 +35,10 @@ class FakeDataSource(
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> =
         runBlocking {
+            if (shouldReturnError) {
+                val exception = Exception(REMINDER_TEST_EXCEPTION_ERROR)
+                return@runBlocking Result.Error(exception.localizedMessage)
+            }
             reminders?.firstOrNull { it.id == id }.let {
                 return@runBlocking if (it != null) {
                     Result.Success(it)
